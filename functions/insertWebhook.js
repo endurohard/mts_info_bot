@@ -1,4 +1,5 @@
 export = insertWebhook()
+const { Pool } = require('pg');
 // Функция для вставки вебхука в базу данных
 async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(data) VALUES($1) RETURNING id';

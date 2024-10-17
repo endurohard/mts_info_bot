@@ -2,7 +2,16 @@ import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
 import { Pool } from 'pg';
 
+
 import { transformCallHistory } from './functions/transformCallHistory.js'
+// Настройки подключения к PostgreSQL
+const pool = new Pool({
+    user: 'postgres',           // Ваше имя пользователя
+    host: 'localhost',          // Адрес хоста базы данных
+    database: 'webhookdb',      // Название базы данных
+    password: '6TQNF_Srld',     // Ваш пароль
+    port: 5432,                 // Порт подключения (по умолчанию 5432)
+});
 
 // Функция для вставки вебхука в базу данных
 async function insertWebhook(data) {
@@ -16,16 +25,6 @@ async function insertWebhook(data) {
         console.error('Ошибка при вставке вебхука:', err);
     }
 }
-
-// Настройки подключения к PostgreSQL
-const pool = new Pool({
-    user: 'postgres',           // Ваше имя пользователя
-    host: 'localhost',          // Адрес хоста базы данных
-    database: 'webhookdb',      // Название базы данных
-    password: '6TQNF_Srld',     // Ваш пароль
-    port: 5432,                 // Порт подключения (по умолчанию 5432)
-});
-
 
 
 // Получение токена из .env
