@@ -17,7 +17,6 @@ bot.onText(/\/start/, (msg) => {
         reply_markup: {
             keyboard: [['Запуск'], ['Активация API'], ['Получить список абонентов'], ['История вызовов']],
             resize_keyboard: true,
-            one_time_keyboard: true
         }
     });
 });
