@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
-import https from 'https';
 
 import { transformCallHistory } from './functions/transformCallHistory.js'
 import {getAbonents, getCallHistory} from "./functions/api.js";
