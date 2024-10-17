@@ -1,0 +1,17 @@
+{
+  "name": "mts_info_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot_mts.js",
+  "scripts": {
+    "start": "node bot_mts.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "got": "^14.4.3",
+    "node-telegram-bot-api": "^0.66.0"
+  }
+}
