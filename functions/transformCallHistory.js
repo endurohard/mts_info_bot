@@ -1,7 +1,6 @@
 // Функция для преобразования ответа с историей звонков
 export function transformCallHistory(callHistory) {
-    console.log('transformCallHistory', callHistory);
-    return callHistory.map(call => {
+    return callHistory.content.map(call => {
         return {
             enterpriseBwksId: call.enterpriseBwksId,
             groupBwksId: call.groupBwksId,
