@@ -4,7 +4,7 @@
   "description": "",
   "main": "bot_mts.js",
   "scripts": {
-    "start": "node bot_mts.js"
+    "start": "TZ='Europe/Moscow' node bot_mts.js"
   },
   "type": "module",
   "author": "",
