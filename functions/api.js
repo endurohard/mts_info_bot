@@ -1,3 +1,4 @@
+import got from 'got';
 const apiToken = process.env.MTS_API_TOKEN;
 
 // Функция для получения списка абонентов
