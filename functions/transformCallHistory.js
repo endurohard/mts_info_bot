@@ -1,10 +1,9 @@
 import dateFormat, { masks } from "dateformat";
 // Функция для преобразования ответа с историей звонков
 export function transformCallHistory(callHistory) {
-    const callTime = new Date(call.callTime);
-
-
     return callHistory.content.map(call => {
+        const callTime = new Date(call.callTime);
+
         return {
             enterpriseBwksId: call.enterpriseBwksId,
             groupBwksId: call.groupBwksId,
