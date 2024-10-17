@@ -3,7 +3,7 @@ import TelegramBot from 'node-telegram-bot-api';
 
 
 import { transformCallHistory } from './functions/transformCallHistory.js'
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 // Настройки подключения к PostgreSQL
 const pool = new Pool({
