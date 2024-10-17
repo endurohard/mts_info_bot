@@ -66,6 +66,7 @@ bot.onText(/История вызовов/, async (msg) => {
         bot.sendMessage(chatId, `История вызовов: ${JSON.stringify(transformedHistory, null, 2)}`);
     } catch (error) {
         console.error('Ошибка при получении истории вызовов:', error.response ? error.response.body : error.message);
+        console.error(error.stack);
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
 });
