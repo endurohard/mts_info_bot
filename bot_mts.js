@@ -58,15 +58,26 @@ bot.onText(/Получить список абонентов/, async (msg) => {
 // Обработка нажатия на кнопку 'История вызовов'
 bot.onText(/История вызовов/, async (msg) => {
     const chatId = msg.chat.id;
-    console.log('Кнопка "История вызовов" нажата');
     try {
-        const callHistory = await getCallHistory();
-        const transformedHistory = transformCallHistory(callHistory);
-        console.log('transformedHistory', JSON.stringify(transformedHistory, null, 2));
-        bot.sendMessage(chatId, `История вызовов: ${JSON.stringify(transformedHistory, null, 2)}`);
+        const response = await getCallHistory(); // Получение истории вызовов
+        const calls = response.content || []; // Проверка наличия вызовов
+
+        if (!Array.isArray(calls) || calls.length === 0) {
+            bot.sendMessage(chatId, 'История вызовов пуста.');
+            return;
+        }
+
+        // Преобразуем и фильтруем историю вызовов
+        const formattedCalls = transformCallHistory(response);
+
+        // Формируем сообщение для отправки пользователю
+        const message = formattedCalls.map(call => {
+            return `Время: ${call.callTime}\nНомер: ${call.callingNumber}\nНаправление: ${call.direction}\nСтатус: ${call.status}`;
+        }).join('\n\n'); // Каждый вызов отделяем пустой строкой
+
+        bot.sendMessage(chatId, `История вызовов за последние 24 часа:\n\n${message}`);
     } catch (error) {
-        console.error('Ошибка при получении истории вызовов:', error.response ? error.response.body : error.message);
-        console.error(error.stack);
+        console.error('Ошибка при получении истории вызовов:', error.message);
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
 });
