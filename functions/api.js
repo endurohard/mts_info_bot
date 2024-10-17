@@ -1,3 +1,5 @@
+const apiToken = process.env.MTS_API_TOKEN;
+
 // Функция для получения списка абонентов
 export async function getAbonents() {
     const url = 'https://vpbx.mts.ru/api/abonents'; // URL для получения списка абонентов

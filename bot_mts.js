@@ -8,7 +8,6 @@ import {getAbonents, getCallHistory} from "./functions/api.js";
 
 // Получение токена из .env
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-const apiToken = process.env.MTS_API_TOKEN;
 
 // Включение режима опроса (polling)
 const bot = new TelegramBot(telegramToken, { polling: true });
