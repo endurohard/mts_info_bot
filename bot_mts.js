@@ -1,9 +1,8 @@
 import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
-
-
 import { transformCallHistory } from './functions/transformCallHistory.js'
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
 
 // Настройки подключения к PostgreSQL
 const pool = new Pool({
@@ -26,7 +25,6 @@ async function insertWebhook(data) {
         console.error('Ошибка при вставке вебхука:', err);
     }
 }
-
 
 // Получение токена из .env
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
