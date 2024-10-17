@@ -4,6 +4,7 @@ import got from 'got';
 import https from 'https';
 
 import { transformCallHistory } from './functions/transformCallHistory.js'
+import {getAbonents, getCallHistory} from "./functions/api.js";
 
 // Получение токена из .env
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -71,48 +72,13 @@ bot.onText(/История вызовов/, async (msg) => {
     try {
         const callHistory = await getCallHistory();
         const transformedHistory = transformCallHistory(callHistory);
-        console.log('transformedHistory', transformedHistory);
+        console.log('transformedHistory', JSON.stringify(transformedHistory, null, 2));
         bot.sendMessage(chatId, `История вызовов: ${JSON.stringify(transformedHistory, null, 2)}`);
     } catch (error) {
         console.error('Ошибка при получении истории вызовов:', error.response ? error.response.body : error.message);
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
 });
-
-// Функция для получения списка абонентов
-async function getAbonents() {
-    const url = 'https://vpbx.mts.ru/api/abonents'; // URL для получения списка абонентов
-    const headers = {
-        'X-AUTH-TOKEN': apiToken,
-        'Content-Type': 'application/json',
-        'cache-control': 'no-cache'
-    };
-
-    return got.get(url, {
-        responseType: 'json',
-        headers,
-        agent: { https: agent }
-    });
-}
-
-// Функция для получения истории вызовов
-async function getCallHistory() {
-    const dateFrom = new Date();
-    dateFrom.setHours(0, 0, 0, 0);
-
-    const url = `https://vpbx.mts.ru/api/v1/callHistory/enterprise?dateFrom=${dateFrom.getTime()}&page=0&size=20`; // Убедитесь, что это правильный URL
-    const headers = {
-        'X-AUTH-TOKEN': apiToken,
-        'Content-Type': 'application/json',
-        'cache-control': 'no-cache'
-    };
-
-    return got.get(url, {
-        responseType: 'json',
-        headers,
-        agent: { https: agent }
-    });
-}
 
 
 
