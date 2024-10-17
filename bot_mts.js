@@ -69,7 +69,11 @@ bot.onText(/История вызовов/, async (msg) => {
 
         // Преобразуем и отформатируем историю звонков
         const formattedCalls = calls.map(call => {
-            return `Время звонка: ${call.callTime},\nНомер: ${call.callingNumber},\nНаправление: ${call.direction},\nСтатус: ${call.status}`;
+            const callTime = new Date(call.callTime).toLocaleString(); // Преобразуем метку времени в читаемый формат
+            const direction = call.direction === 'ORIGINATING' ? 'исходящий' : 'входящий'; // Преобразуем направление
+            const status = call.status === 'PLACED' ? 'состоявшийся' : 'пропущенный'; // Преобразуем статус
+
+            return `Время звонка: ${callTime},\nНомер: ${call.callingNumber},\nНаправление: ${direction},\nСтатус: ${status}`;
         }).join('\n\n'); // Соединяем звонки с двумя новыми строками между записями
 
         bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
