@@ -5,7 +5,7 @@ export function transformCallHistory(callHistory) {
             enterpriseBwksId: call.enterpriseBwksId,
             groupBwksId: call.groupBwksId,
             userId: call.userId,
-            callTime: new Date(call.callTime).toLocaleString(),
+            callTime: new Date(call.callTime).toString(),
             callingNumber: call.callingNumber,
             calledNumber: call.calledNumber,
             duration: call.duration,
