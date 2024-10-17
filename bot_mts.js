@@ -60,6 +60,20 @@ bot.onText(/История вызовов/, async (msg) => {
     const chatId = msg.chat.id;
     console.log('Кнопка "История вызовов" нажата');
     try {
+        const response = await getCallHistory(); // Получение истории вызовов
+        const calls = response.content || []; // Проверка наличия вызовов
+        if (!Array.isArray(calls) || calls.length === 0) {
+            bot.sendMessage(chatId, 'История вызовов пуста.');
+            return;
+        }
+        // Преобразуем и фильтруем историю вызовов
+        const formattedCalls = transformCallHistory(response);
+
+        // Формируем сообщение для отправки пользователю
+        const message = formattedCalls.map(call => {
+            return `Время: ${call.callTime}\nНомер: ${call.callingNumber}\nНаправление: ${call.direction}\nСтатус: ${call.status}`;
+        }).join('\n\n'); // Каждый вызов отделяем пустой строкой
+
         const callHistory = await getCallHistory();
         const transformedHistory = transformCallHistory(callHistory);
         console.log('transformedHistory', JSON.stringify(transformedHistory, null, 2));
