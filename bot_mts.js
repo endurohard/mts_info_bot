@@ -1,9 +1,10 @@
 import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
-import { Pool } from 'pg';
 
 
 import { transformCallHistory } from './functions/transformCallHistory.js'
+const { Pool } = require('pg');
+
 // Настройки подключения к PostgreSQL
 const pool = new Pool({
     user: 'postgres',           // Ваше имя пользователя
