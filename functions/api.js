@@ -41,5 +41,5 @@ export async function getCallHistory() {
         responseType: 'json',
         headers,
         agent: { https: agent }
-    });
+    }).json();
 }
