@@ -30,7 +30,7 @@ export async function getCallHistory() {
     const dateFrom = new Date();
     dateFrom.setHours(0, 0, 0, 0);
 
-    const url = `https://vpbx.mts.ru/api/v1/callHistory/enterprise?dateFrom=${dateFrom.getTime()}&page=0&size=5`; // Убедитесь, что это правильный URL
+    const url = `https://vpbx.mts.ru/api/v1/callHistory/enterprise?dateFrom=${dateFrom.getTime()}&page=0&size=1`; // Убедитесь, что это правильный URL
     const headers = {
         'X-AUTH-TOKEN': apiToken,
         'Content-Type': 'application/json',
