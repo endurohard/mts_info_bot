@@ -69,7 +69,16 @@ bot.onText(/История вызовов/, async (msg) => {
 
         // Преобразуем и отформатируем историю звонков
         const formattedCalls = calls.map(call => {
-            const callTime = new Date(call.callTime).toLocaleString(); // Преобразуем метку времени в читаемый формат
+            const callTime = new Date(call.callTime).toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false // Включаем 24-часовой формат
+            });
+
             const direction = call.direction === 'ORIGINATING' ? 'исходящий' : 'входящий'; // Преобразуем направление
             const status = call.status === 'PLACED' ? 'состоявшийся' : 'пропущенный'; // Преобразуем статус
 
