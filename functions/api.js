@@ -1,6 +1,13 @@
 import got from 'got';
 const apiToken = process.env.MTS_API_TOKEN;
 
+// Создаем агент с параметрами шифрования
+const agent = new https.Agent({
+    rejectUnauthorized: false,
+    secureProtocol: 'TLSv1_2_method',
+    ciphers: 'ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384',
+});
+
 // Функция для получения списка абонентов
 export async function getAbonents() {
     const url = 'https://vpbx.mts.ru/api/abonents'; // URL для получения списка абонентов

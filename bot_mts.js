@@ -11,13 +11,6 @@ const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
 // Включение режима опроса (polling)
 const bot = new TelegramBot(telegramToken, { polling: true });
 
-// Создаем агент с параметрами шифрования
-const agent = new https.Agent({
-    rejectUnauthorized: false,
-    secureProtocol: 'TLSv1_2_method',
-    ciphers: 'ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384',
-});
-
 // Обработка команды '/start'
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
