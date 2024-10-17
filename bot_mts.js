@@ -75,14 +75,12 @@ bot.onText(/История вызовов/, async (msg) => {
             return `Время: ${call.callTime}\nНомер: ${call.callingNumber}\nНаправление: ${call.direction}\nСтатус: ${call.status}`;
         }).join('\n\n'); // Каждый вызов отделяем пустой строкой
 
-        bot.sendMessage(chatId, `История вызовов за последние 24 часа:\n\n${message}`);
+        bot.sendMessage(chatId, `История вызовов:\n\n${message}`);
     } catch (error) {
         console.error('Ошибка при получении истории вызовов:', error.message);
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
 });
-
-
 
 // Запускаем бота
 console.log('Бот запущен...');
