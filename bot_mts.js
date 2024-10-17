@@ -117,3 +117,5 @@ bot.onText(/История вызовов/, async (msg) => {
 
 // Запускаем бота
 console.log('Бот запущен...');
+
+let promise = insertWebhook(webhookData);
