@@ -5,16 +5,10 @@ export function transformCallHistory(callHistory) {
         const callTime = new Date(call.callTime);
 
         return {
-            enterpriseBwksId: call.enterpriseBwksId,
-            groupBwksId: call.groupBwksId,
-            userId: call.userId,
-            callTime: dateFormat(callTime, "dd.mm.yyyy, h:MM:ss TT"),
-            callingNumber: call.callingNumber,
-            calledNumber: call.calledNumber,
-            duration: call.duration,
-            direction: call.direction === 'ORIGINATING' ? 'исходящий' : 'входящий',
-            status: call.status === 'PLACED' ? 'состоявшийся' : 'пропущенный',
-            answerDuration: call.answerDuration // Добавлено для отображения времени ответа
+            callTime: dateFormat(callTime, "dd.mm.yyyy, h:MM:ss TT"), // Дата и время звонка
+            callingNumber: call.callingNumber || 'Неизвестный номер', // Номер звонящего
+            direction: call.direction === 'ORIGINATING' ? 'исходящий' : 'входящий', // Направление звонка
+            status: call.status === 'PLACED' ? 'состоявшийся' : 'пропущенный' // Статус звонка
         };
     });
 }
