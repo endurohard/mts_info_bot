@@ -8,6 +8,7 @@ const { Pool } = pkg;
 export { pool };
 import express from 'express'; // Убедитесь, что express установлен
 import bodyParser from 'body-parser';
+import logger from './logger/logger.js'; // не забудьте добавить .js в конце
 
 const app = express();
 const PORT = 7771;
@@ -24,42 +25,38 @@ function convertToDateTime(timestamp) {
     return null; // Если timestamp равен null, возвращаем null
 }
 
-const logger = require('./logger');
+
 
 // Ваши другие функции, включая insertWebhook...
 async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
-
     const values = [
-        data.eventType, // eventType
-        BigInt(data.abonentId), // abonentId (преобразуем в bigint)
-        data.payload.callId, // callId
-        data.payload.state, // state
-        data.payload.remotePartyName || '', // remotePartyName (или пустая строка, если null)
-        data.payload.remotePartyAddress, // remotePartyAddress
-        data.payload.callDirection, // callDirection
-        convertToDateTime(data.payload.startTime), // startTime
-        convertToDateTime(data.payload.answerTime), // answerTime
-        convertToDateTime(data.payload.endTime), // endTime
-        data.payload.extTrackingId // extTrackingId
+        data.eventType,
+        BigInt(data.abonentId),
+        data.payload.callId,
+        data.payload.state,
+        data.payload.remotePartyName,
+        data.payload.remotePartyAddress,
+        data.payload.callDirection,
+        convertToDateTime(data.payload.startTime),
+        convertToDateTime(data.payload.answerTime),
+        convertToDateTime(data.payload.endTime),
+        data.payload.extTrackingId
     ];
 
     try {
         await pool.query(query, values);
-        console.log('Вебхук добавлен в базу данных:', data);
+        logger.info('Вебхук добавлен в базу данных:', data);
     } catch (err) {
-        console.error('Ошибка при вставке вебхука:', err);
+        logger.error('Ошибка при вставке вебхука:', err);
     }
 }
 
 // Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
-    console.log('Получен вебхук:', req.body); // Логируем полученные данные
-
-    // Вставляем данные в базу данных
+    logger.info('Получен вебхук:', req.body);
     await insertWebhook(req.body);
-
-    res.status(200).send('Webhook received'); // Ответ для vpbx
+    res.status(200).send('Webhook received');
 });
 
 // Запускаем сервер
