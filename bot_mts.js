@@ -13,6 +13,9 @@ const pool = new Pool({
     port: 5432,                 // Порт подключения
 });
 
+// Инициализация Telegram бота
+const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+
 // Функция для вставки вебхука в базу данных
 async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(data) VALUES($1) RETURNING id';
@@ -34,14 +37,11 @@ const webhookData = {
     status: "состоявшийся"
 };
 
-// Вставка вебхука в базу данных (без повторного объявления переменной promise)
-insertWebhook(webhookData).catch(err => console.error('Ошибка:', err));
-
-// Обработка нажатия на кнопку 'Запуск'
+// Обработчик команды /Запуск
 bot.onText(/Запуск/, (msg) => {
     const chatId = msg.chat.id;
-    console.log('Кнопка "Запуск" нажата');
-    bot.sendMessage(chatId, 'Вы нажали кнопку "Запуск".');
+    bot.sendMessage(chatId, 'Бот успешно запущен!');
+    insertWebhook(webhookData).catch(err => console.error('Ошибка:', err));
 });
 
 // Обработка нажатия на кнопку 'Активация API'
