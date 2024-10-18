@@ -88,16 +88,33 @@ async function insertWebhook(data) {
     }
 }
 
+// Функция для получения списка абонентов
+async function getAbonents() {
+    try {
+        const response = await fetch('https://your-api-endpoint.com/abonents', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${process.env.API_TOKEN}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Ошибка при получении абонентов: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Ошибка при получении списка абонентов:', error);
+        throw error;
+    }
+}
+
 // Обработка вебхуков
 app.post('/api/subscription', async (req, res) => {
     const webhookData = req.body;
 
-    // Логируем данные вебхука для отладки
     console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2));
     console.log('Время ответа:', convertToDateTime(webhookData.payload.answerTime));
     console.log('Время завершения:', convertToDateTime(webhookData.payload.endTime));
 
-    // Вставляем вебхук в базу данных
     await insertWebhook(webhookData);
 
     res.status(200).send('Webhook received');
