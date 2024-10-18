@@ -64,11 +64,14 @@ app.post('/api/subscription', async (req, res) => {
 
     console.log('Получен вебхук:', webhookData); // Логируем полученные данные
 
-    // Логируем время звонка и номер
-    if (webhookData.payload) {
-        console.log(`Время звонка: ${webhookData.payload.answerTime || 'null'}, Номер: ${webhookData.payload.remotePartyAddress || 'null'}`);
+    // Проверяем, является ли payload массивом
+    if (Array.isArray(webhookData.payload)) {
+        webhookData.payload.forEach(item => {
+            console.log(`Время звонка: ${item.answer_time || 'null'}, Номер: ${item.remote_party_address || 'null'}`);
+        });
     } else {
-        console.log('Payload отсутствует в вебхуке.');
+        // Если это не массив, логируем данные из одного объекта
+        console.log(`Время звонка: ${webhookData.payload.answer_time || 'null'}, Номер: ${webhookData.payload.remote_party_address || 'null'}`);
     }
 
     // Вставляем данные в базу данных
