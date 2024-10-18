@@ -5,12 +5,14 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 // Настройки подключения к PostgreSQL
+
+let process;
 const pool = new Pool({
-    user: 'postgres',           // Имя пользователя PostgreSQL
-    host: 'localhost',          // Адрес хоста
-    database: 'webhookdb',      // Название базы данных
-    password: '6TQNF_Srld',     // Пароль
-    port: 5432,                 // Порт подключения
+    user: process.env.DB_USER, // Если у вас есть переменная окружения
+    host: 'localhost',
+    database: process.env.DB_NAME, // Имя вашей базы данных
+    password: process.env.DB_PASSWORD, // Пароль из .env
+    port: 5432,
 });
 console.log('Connecting to database:', process.env.DATABASE_URL);
 // Инициализация Telegram бота
