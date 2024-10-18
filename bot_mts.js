@@ -126,7 +126,7 @@ bot.onText(/История вызовов/, async (msg) => {
 });
 
 // Пример использования функции
-bot.onText(/Получить историю вызовов/, async (msg) => {
+bot.onText(/Получить историю вызовов DB/, async (msg) => {
     const chatId = msg.chat.id;
     try {
         const callHistory = await getCallHistoryFromDB();
