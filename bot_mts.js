@@ -94,13 +94,29 @@ async function getAbonents() {
         const response = await fetch('https://your-api-endpoint.com/abonents', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${process.env.API_TOKEN}`,
+                'Authorization': `Bearer ${process.env.API_TOKEN}`, // Добавьте необходимый токен
             },
         });
+
+        // Логируем статус ответа
+        console.log('Статус ответа:', response.status);
+
         if (!response.ok) {
             throw new Error(`Ошибка при получении абонентов: ${response.statusText}`);
         }
-        return await response.json();
+
+        const contentType = response.headers.get('content-type');
+
+        // Проверка, что контент — это JSON
+        if (contentType && contentType.includes('application/json')) {
+            return await response.json(); // Парсим JSON, если контент соответствует типу
+        } else {
+            // Логируем текст ответа, если это не JSON
+            const textResponse = await response.text();
+            console.error('Получен не-JSON ответ:', textResponse);
+            throw new Error('Получен ответ не в формате JSON');
+        }
+
     } catch (error) {
         console.error('Ошибка при получении списка абонентов:', error);
         throw error;
