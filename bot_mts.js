@@ -17,26 +17,20 @@ app.use(bodyParser.json());
 
 // Функция для вставки данных в базу данных
 async function insertWebhook(data) {
-    // Функция для преобразования Unix timestamp в дату
-    const convertToDateTime = (timestamp) => {
-        if (!timestamp) return null; // Проверка на случай отсутствия значения
-        const date = new Date(timestamp); // Преобразуем timestamp из миллисекунд в объект Date
-        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
-    };
-
     const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
+
     const values = [
-        data.eventType, // eventType
-        data.abonentId, // abonentId
-        data.payload.callId, // callId
-        data.payload.state, // state
-        data.payload.remotePartyName, // remotePartyName
-        data.payload.remotePartyAddress, // remotePartyAddress
-        data.payload.callDirection, // callDirection
-        convertToDateTime(data.payload.startTime), // startTime в формате datetime
-        convertToDateTime(data.payload.answerTime), // answerTime в формате datetime
-        convertToDateTime(data.payload.endTime), // endTime в формате datetime
-        data.payload.extTrackingId // extTrackingId
+        data.event_type, // eventType
+        BigInt(data.abonent_id), // abonentId (преобразуем в bigint)
+        data.call_id, // callId
+        data.state, // state
+        data.remote_party_name || '', // remotePartyName (или пустая строка, если null)
+        data.remote_party_address, // remotePartyAddress
+        data.call_direction, // callDirection
+        convertToDateTime(data.start_time), // startTime
+        convertToDateTime(data.answer_time), // answerTime
+        convertToDateTime(data.end_time), // endTime
+        data.ext_tracking_id // extTrackingId
     ];
 
     try {
@@ -46,7 +40,6 @@ async function insertWebhook(data) {
         console.error('Ошибка при вставке вебхука:', err);
     }
 }
-
 // Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
     console.log('Получен вебхук:', req.body); // Логируем полученные данные
