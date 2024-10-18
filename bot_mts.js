@@ -62,7 +62,8 @@ async function insertWebhook(data) {
 app.post('/api/subscription', async (req, res) => {
     const webhookData = req.body; // Здесь мы сохраняем данные вебхука в переменную
 
-    console.log('Получен вебхук:', webhookData); // Логируем полученные данные
+    // Логируем полученные данные с детальной информацией
+    console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2)); // Выводим все данные вебхука
 
     // Проверяем, является ли payload массивом
     if (Array.isArray(webhookData.payload)) {
