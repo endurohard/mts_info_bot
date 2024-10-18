@@ -40,8 +40,9 @@ function formatDateString(dateString) {
     return `${year}-${month}-${day} ${String(formattedHours).padStart(2, '0')}:${minutes}:${seconds}`;
 }
 
-// Пример данных вебхука
+// Пример данных вебхука с добавленным webhook_url
 const webhookData = {
+    webhookUrl: "https://example.com/webhook", // Замените на ваш URL вебхука
     callTime: "18.10.2024, 12:02:59 AM",
     callingNumber: "+79634040144",
     direction: "входящий",
@@ -52,8 +53,8 @@ const webhookData = {
 async function insertWebhook(data) {
     const formattedCallTime = formatDateString(data.callTime); // Преобразуем строку даты
 
-    const query = 'INSERT INTO webhooks(call_time, calling_number, direction, status) VALUES($1, $2, $3, $4) RETURNING id';
-    const values = [formattedCallTime, data.callingNumber, data.direction, data.status];
+    const query = 'INSERT INTO webhooks(webhook_url, call_time, calling_number, direction, status) VALUES($1, $2, $3, $4, $5) RETURNING id';
+    const values = [data.webhookUrl, formattedCallTime, data.callingNumber, data.direction, data.status];
 
     try {
         const res = await pool.query(query, values);
