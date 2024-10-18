@@ -1,5 +1,6 @@
-import got from 'got';
 import https from 'https';
+import got from 'got'; // Убедитесь, что got импортирован
+
 const apiToken = process.env.MTS_API_TOKEN;
 
 // Создаем агент с параметрами шифрования
@@ -25,21 +26,27 @@ export async function getAbonents() {
     });
 }
 
+
 // Функция для получения истории вызовов
 export async function getCallHistory() {
     const dateFrom = new Date();
     dateFrom.setHours(0, 0, 0, 0);
 
-    const url = `https://vpbx.mts.ru/api/v1/callHistory/enterprise?dateFrom=${dateFrom.getTime()}&page=0&size=1`; // Убедитесь, что это правильный URL
+    const url = `https://vpbx.mts.ru/api/v1/callHistory/enterprise?dateFrom=${dateFrom.getTime()}&page=0&size=1`;
     const headers = {
         'X-AUTH-TOKEN': apiToken,
         'Content-Type': 'application/json',
         'cache-control': 'no-cache'
     };
 
-    return got.get(url, {
-        responseType: 'json',
-        headers,
-        agent: { https: agent }
-    }).json();
+    try {
+        return await got.get(url, {
+            responseType: 'json',
+            headers,
+            agent: { https: agent }
+        }).json();
+    } catch (error) {
+        console.error('Ошибка при получении истории вызовов:', error.message);
+        throw error; // Прокидываем ошибку дальше
+    }
 }
