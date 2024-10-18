@@ -53,14 +53,20 @@ async function insertWebhook(data) {
 }
 
 // Обработка вебхука
+// Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
-    console.log('Получен вебхук:', req.body); // Логируем полученные данные
+    const webhookData = req.body; // Здесь мы сохраняем данные вебхука в переменную
+
+    console.log('Получен вебхук:', webhookData); // Логируем полученные данные
+
+    // Логируем время звонка и номер
+    console.log(`Время звонка: ${webhookData.payload.answerTime || 'null'}, Номер: ${webhookData.payload.remotePartyAddress || 'null'}`);
+
     // Вставляем данные в базу данных
-    await insertWebhook(req.body);
+    await insertWebhook(webhookData);
+
     res.status(200).send('Webhook received'); // Ответ для vpbx
 });
-
-console.log(`Время звонка: ${data.payload.answerTime || 'null'}, Номер: ${data.payload.remotePartyAddress || 'null'}`);
 
 // Запускаем сервер
 app.listen(PORT, () => {
