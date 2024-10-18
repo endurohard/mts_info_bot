@@ -6,11 +6,11 @@ const { Pool } = pkg;
 
 // Настройки подключения к PostgreSQL
 const pool = new Pool({
-    user: 'postgres',           // Ваше имя пользователя
-    host: 'localhost',          // Адрес хоста базы данных
+    user: 'postgres',           // Имя пользователя PostgreSQL
+    host: 'localhost',          // Адрес хоста
     database: 'webhookdb',      // Название базы данных
-    password: '6TQNF_Srld',     // Ваш пароль
-    port: 5432,                 // Порт подключения (по умолчанию 5432)
+    password: '6TQNF_Srld',     // Пароль
+    port: 5432,                 // Порт подключения
 });
 
 // Функция для вставки вебхука в базу данных
@@ -25,6 +25,18 @@ async function insertWebhook(data) {
         console.error('Ошибка при вставке вебхука:', err);
     }
 }
+
+// Пример данных вебхука
+const webhookData = {
+    callTime: "18.10.2024, 12:02:59 AM",
+    callingNumber: "+79634040144",
+    direction: "входящий",
+    status: "состоявшийся"
+};
+
+// Вставка вебхука в базу данных
+let promise = insertWebhook(webhookData);
+promise.catch(err => console.error('Ошибка:', err));
 
 // Получение токена из .env
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
