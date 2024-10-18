@@ -5,10 +5,18 @@ import { transformCallHistory } from './functions/transformCallHistory.js'; // �
 import { getCallHistoryFromDB as getHistoryFromDB } from './functions/db.js';
 import pkg from 'pg';
 const { Pool } = pkg;
-export { pool };
 import express from 'express'; // Убедитесь, что express установлен
 import bodyParser from 'body-parser';
 import logger from './logger/logger.js'; // не забудьте добавить .js в конце
+
+// Настройки подключения к PostgreSQL
+const pool = new Pool({
+    user: process.env.DB_USER || 'postgres',
+    host: 'localhost',
+    database: process.env.DB_NAME || 'webhookdb',
+    password: process.env.DB_PASSWORD || '6TQNF_Srld',
+    port: 5432,
+});
 
 const app = express();
 const PORT = 7771;
@@ -25,9 +33,7 @@ function convertToDateTime(timestamp) {
     return null; // Если timestamp равен null, возвращаем null
 }
 
-
-
-// Ваши другие функции, включая insertWebhook...
+// Вставка вебхука в базу данных
 async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
     const values = [
@@ -53,14 +59,17 @@ async function insertWebhook(data) {
 }
 
 // Обработка вебхука
-// Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
     const webhookData = req.body; // Здесь мы сохраняем данные вебхука в переменную
 
     console.log('Получен вебхук:', webhookData); // Логируем полученные данные
 
     // Логируем время звонка и номер
-    console.log(`Время звонка: ${webhookData.payload.answerTime || 'null'}, Номер: ${webhookData.payload.remotePartyAddress || 'null'}`);
+    if (webhookData.payload) {
+        console.log(`Время звонка: ${webhookData.payload.answerTime || 'null'}, Номер: ${webhookData.payload.remotePartyAddress || 'null'}`);
+    } else {
+        console.log('Payload отсутствует в вебхуке.');
+    }
 
     // Вставляем данные в базу данных
     await insertWebhook(webhookData);
@@ -71,15 +80,6 @@ app.post('/api/subscription', async (req, res) => {
 // Запускаем сервер
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);
-});
-
-// Настройки подключения к PostgreSQL
-const pool = new Pool({
-    user: process.env.DB_USER || 'postgres',
-    host: 'localhost',
-    database: process.env.DB_NAME || 'webhookdb',
-    password: process.env.DB_PASSWORD || '6TQNF_Srld',
-    port: 5432,
 });
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
@@ -189,7 +189,6 @@ bot.onText(/Получить историю вызовов DB/, async (msg) => {
 bot.onText(/Запуск/, (msg) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, 'Бот успешно запущен!');
-    insertWebhook(webhookData).catch(err => console.error('Ошибка:', err));
 });
 
 // Запускаем бота
