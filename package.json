@@ -1,6 +1,7 @@
 {
   "name": "mts_info_bot",
   "version": "1.0.0",
+  "types": "module",
   "description": "",
   "main": "bot_mts.js",
   "scripts": {
