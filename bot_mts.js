@@ -17,13 +17,19 @@ app.use(bodyParser.json());
 
 // Функция для вставки данных в базу данных
 async function insertWebhook(data) {
-    const query = 'INSERT INTO webhooks(webhook_url, call_time, calling_number, direction, status) VALUES($1, $2, $3, $4, $5)';
+    const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
     const values = [
-        data.webhook_url,
-        data.call_time,
-        data.calling_number,
-        data.direction,
-        data.status
+        data.eventType, // eventType
+        data.abonentId, // abonentId
+        data.payload.callId, // callId
+        data.payload.state, // state
+        data.payload.remotePartyName, // remotePartyName
+        data.payload.remotePartyAddress, // remotePartyAddress
+        data.payload.callDirection, // callDirection
+        data.payload.startTime, // startTime
+        data.payload.answerTime, // answerTime
+        data.payload.endTime, // endTime
+        data.payload.extTrackingId // extTrackingId
     ];
 
     try {
