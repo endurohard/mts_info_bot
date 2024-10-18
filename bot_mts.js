@@ -101,13 +101,13 @@ bot.onText(/Получить список абонентов/, async (msg) => {
 bot.onText(/История вызовов/, async (msg) => {
     const chatId = msg.chat.id;
     try {
-        const response = await getCallHistory(); // Здесь вызываем getCallHistory
+        const response = await getCallHistory(); // Получаем историю вызовов
         const calls = response.content || []; // Проверяем, есть ли вызовы
-        // Остальной код обработки истории вызовов...
-    } catch (error) {
-        console.error('Ошибка при получении истории вызовов:', error.message);
-        bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
-    }
+
+        if (!Array.isArray(calls) || calls.length === 0) {
+            bot.sendMessage(chatId, 'История вызовов пуста.');
+            return;
+        }
 
         // Преобразуем и отформатируем историю звонков
         const formattedCalls = calls.map(call => {
