@@ -1,7 +1,7 @@
 import dateFormat from "dateformat";
 
 // Функция для преобразования ответа с историей звонков
-export async function transformCallHistory(callHistory) {
+export function transformCallHistory(callHistory) {
     return callHistory.content.map(call => {
         const callTime = new Date(call.callTime);
 

@@ -110,21 +110,10 @@ bot.onText(/История вызовов/, async (msg) => {
         }
 
         // Преобразуем и отформатируем историю звонков
-        const formattedCalls = calls.map(call => {
-            const callTime = new Date(call.callTime).toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false // Включаем 24-часовой формат
-            });
+        const transformedCalls = transformCallHistory(response); // Используем transformCallHistory
 
-            const direction = call.direction === 'ORIGINATING' ? 'исходящий' : 'входящий'; // Преобразуем направление
-            const status = call.status === 'PLACED' ? 'состоявшийся' : 'пропущенный'; // Преобразуем статус
-
-            return `Время звонка: ${callTime},\nНомер: ${call.callingNumber},\nНаправление: ${direction},\nСтатус: ${status}`;
+        const formattedCalls = transformedCalls.map(call => {
+            return `Время звонка: ${call.callTime},\nНомер: ${call.callingNumber},\nНаправление: ${call.direction},\nСтатус: ${call.status}`;
         }).join('\n\n'); // Соединяем звонки с двумя новыми строками между записями
 
         bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
