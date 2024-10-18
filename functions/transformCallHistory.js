@@ -1,16 +1,5 @@
 import dateFormat from "dateformat";
 
-// Функция для получения истории звонков (добавь свою логику здесь)
-export async function getCallHistory() {
-    // Пример логики получения истории звонков
-    // Например, выполнение HTTP-запроса к API
-    const response = await fetch('ваш_адрес_api'); // Замените на ваш адрес
-    if (!response.ok) {
-        throw new Error('Ошибка получения данных');
-    }
-    return await response.json(); // Возвращаем JSON-ответ
-}
-
 // Функция для преобразования ответа с историей звонков
 export function transformCallHistory(callHistory) {
     return callHistory.content.map(call => {
