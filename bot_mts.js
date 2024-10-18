@@ -5,7 +5,6 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 // Настройки подключения к PostgreSQL
-// Проверяем, что переменные окружения загружены
 console.log('DB_USER:', process.env.DB_USER);
 console.log('DB_NAME:', process.env.DB_NAME);
 console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
@@ -18,17 +17,23 @@ const pool = new Pool({
     port: 5432,
 });
 
-console.log('Connecting to database:', process.env.DATABASE_URL);
-// Инициализация Telegram бота
+const yourWebhookUrl = 'localhost'; // Укажите правильный URL
+
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
 // Функция для вставки вебхука в базу данных
-async function insertWebhook(data) {
-    const query = 'INSERT INTO webhooks(data) VALUES($1) RETURNING id';
-    const values = [data];
+async function insertWebhook(webhookData) {
+    const query = 'INSERT INTO webhooks (webhook_url, call_time, calling_number, direction, status) VALUES ($1, $2, $3, $4, $5) RETURNING id';
+    const values = [
+        yourWebhookUrl,
+        webhookData.callTime,
+        webhookData.callingNumber,
+        webhookData.direction,
+        webhookData.status
+    ];
 
     try {
-        const res = await pool.query('INSERT INTO webhooks (webhook_url) VALUES ($1) RETURNING *', [yourWebhookUrl]);
+        const res = await pool.query(query, values);
         console.log('Вебхук добавлен с ID:', res.rows[0].id);
     } catch (err) {
         console.error('Ошибка при вставке вебхука:', err);
