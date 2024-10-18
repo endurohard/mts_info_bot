@@ -12,7 +12,7 @@ const pool = new Pool({
     password: '6TQNF_Srld',     // Пароль
     port: 5432,                 // Порт подключения
 });
-
+console.log('Connecting to database:', process.env.DATABASE_URL);
 // Инициализация Telegram бота
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
