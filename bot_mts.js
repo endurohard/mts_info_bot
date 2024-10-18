@@ -22,7 +22,7 @@ async function insertWebhook(data) {
     const values = [data];
 
     try {
-        const res = await pool.query(query, values);
+        const res = await pool.query('INSERT INTO webhooks (webhook_url) VALUES ($1) RETURNING *', [yourWebhookUrl]);
         console.log('Вебхук добавлен с ID:', res.rows[0].id);
     } catch (err) {
         console.error('Ошибка при вставке вебхука:', err);
