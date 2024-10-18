@@ -21,23 +21,23 @@ const yourWebhookUrl = 'localhost'; // Укажите правильный URL
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
-// Функция для вставки вебхука в базу данных
-async function insertWebhook(webhookData) {
-    const query = 'INSERT INTO webhooks (webhook_url, call_time, calling_number, direction, status) VALUES ($1, $2, $3, $4, $5) RETURNING id';
-    const values = [
-        yourWebhookUrl,
-        webhookData.callTime,
-        webhookData.callingNumber,
-        webhookData.direction,
-        webhookData.status
-    ];
+// Функция для преобразования строки даты в формат, который распознается PostgreSQL
+function formatDateString(dateString) {
+    const [datePart, timePart] = dateString.split(', ');
+    const [day, month, year] = datePart.split('.');
+    const [time, modifier] = timePart.split(' ');
 
-    try {
-        const res = await pool.query(query, values);
-        console.log('Вебхук добавлен с ID:', res.rows[0].id);
-    } catch (err) {
-        console.error('Ошибка при вставке вебхука:', err);
+    // Преобразуем в 24-часовой формат
+    const [hours, minutes, seconds] = time.split(':');
+    let formattedHours = parseInt(hours);
+    if (modifier === 'PM' && formattedHours < 12) {
+        formattedHours += 12;
     }
+    if (modifier === 'AM' && formattedHours === 12) {
+        formattedHours = 0;
+    }
+
+    return `${year}-${month}-${day} ${String(formattedHours).padStart(2, '0')}:${minutes}:${seconds}`;
 }
 
 // Пример данных вебхука
@@ -47,6 +47,21 @@ const webhookData = {
     direction: "входящий",
     status: "состоявшийся"
 };
+
+// Вставка вебхука
+async function insertWebhook(data) {
+    const formattedCallTime = formatDateString(data.callTime); // Преобразуем строку даты
+
+    const query = 'INSERT INTO webhooks(call_time, calling_number, direction, status) VALUES($1, $2, $3, $4) RETURNING id';
+    const values = [formattedCallTime, data.callingNumber, data.direction, data.status];
+
+    try {
+        const res = await pool.query(query, values);
+        console.log('Вебхук добавлен с ID:', res.rows[0].id);
+    } catch (err) {
+        console.error('Ошибка при вставке вебхука:', err);
+    }
+}
 
 // Обработчик команды /Запуск
 bot.onText(/Запуск/, (msg) => {
