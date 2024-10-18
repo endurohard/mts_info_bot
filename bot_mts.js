@@ -108,7 +108,6 @@ bot.onText(/История вызовов/, async (msg) => {
         console.error('Ошибка при получении истории вызовов:', error.message);
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
-});
 
         // Преобразуем и отформатируем историю звонков
         const formattedCalls = calls.map(call => {
