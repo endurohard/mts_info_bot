@@ -2,7 +2,7 @@ import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
 import { getCallHistory } from './functions/api.js'; // Импортируем функцию получения истории вызовов
 import { transformCallHistory } from './functions/transformCallHistory.js'; // Импортируем функцию преобразования
-import { getCallHistoryFromDB } from './functions/db.js';
+import { getCallHistoryFromDB as getHistoryFromDB } from './functions/db.js';
 import pkg from 'pg';
 const { Pool } = pkg;
 
@@ -124,8 +124,6 @@ bot.onText(/История вызовов/, async (msg) => {
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
 });
-
-import { getCallHistoryFromDB } from './functions/db.js';
 
 // Пример использования функции
 bot.onText(/Получить историю вызовов/, async (msg) => {
