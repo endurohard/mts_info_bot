@@ -10,7 +10,7 @@ import bodyParser from 'body-parser';
 import logger from './logger/logger.js'; // не забудьте добавить .js в конце
 
 // Настройки подключения к PostgreSQL
-export const pool = new Pool({ // Добавлено 'export'
+export const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: 'localhost',
     database: process.env.DB_NAME || 'webhookdb',
@@ -63,9 +63,16 @@ app.post('/api/subscription', async (req, res) => {
     const webhookData = req.body; // Здесь мы сохраняем данные вебхука в переменную
 
     // Логируем полученные данные с детальной информацией
-    console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2)); // Выводим все данные вебхука
+    console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2));
 
-    // Проверяем, является ли payload массивом
+    // Проверяем, есть ли payload и его структура
+    if (webhookData.payload) {
+        console.log('Payload:', JSON.stringify(webhookData.payload, null, 2));
+    } else {
+        console.log('Payload отсутствует');
+    }
+
+    // Если payload является массивом
     if (Array.isArray(webhookData.payload)) {
         webhookData.payload.forEach(item => {
             console.log(`Время звонка: ${item.answer_time || 'null'}, Номер: ${item.remote_party_address || 'null'}`);
@@ -179,7 +186,7 @@ bot.onText(/Получить историю вызовов DB/, async (msg) => {
         }
 
         const formattedCalls = callHistory.map(call => {
-            return `Время звонка: ${call.call_time}, Номер: ${call.calling_number}`; // Замените на ваши поля
+            return `Время звонка: ${call.call_time || 'null'}, Номер: ${call.calling_number || 'null'}`; // Замените на ваши поля
         }).join('\n\n');
 
         bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
