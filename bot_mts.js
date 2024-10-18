@@ -10,7 +10,7 @@ import bodyParser from 'body-parser';
 import logger from './logger/logger.js'; // не забудьте добавить .js в конце
 
 // Настройки подключения к PostgreSQL
-const pool = new Pool({
+export const pool = new Pool({ // Добавлено 'export'
     user: process.env.DB_USER || 'postgres',
     host: 'localhost',
     database: process.env.DB_NAME || 'webhookdb',
