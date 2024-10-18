@@ -5,13 +5,16 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 // Настройки подключения к PostgreSQL
+// Проверяем, что переменные окружения загружены
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
 
-let process;
 const pool = new Pool({
-    user: process.env.DB_USER || 'postgres', // Имя пользователя
+    user: process.env.DB_USER || 'postgres',
     host: 'localhost',
-    database: process.env.DB_NAME || 'webhookdb', // Имя базы данных
-    password: process.env.DB_PASSWORD || '6TQNF_Srld', // Пароль
+    database: process.env.DB_NAME || 'webhookdb',
+    password: process.env.DB_PASSWORD || '6TQNF_Srld',
     port: 5432,
 });
 
