@@ -5,7 +5,7 @@ import { transformCallHistory } from './functions/transformCallHistory.js'; // �
 import { getCallHistoryFromDB as getHistoryFromDB } from './functions/db.js';
 import pkg from 'pg';
 const { Pool } = pkg;
-
+export { pool };
 // Настройки подключения к PostgreSQL
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
@@ -100,7 +100,8 @@ bot.onText(/История вызовов/, async (msg) => {
 bot.onText(/Получить историю вызовов DB/, async (msg) => {
     const chatId = msg.chat.id;
     try {
-        const callHistory = await getHistoryFromDB();
+        const callHistory = await getHistoryFromDB(); // Теперь функция доступна
+        console.log('Получена история вызовов из базы данных:', callHistory); // Для отладки
         if (callHistory.length === 0) {
             bot.sendMessage(chatId, 'История вызовов пуста.');
             return;
