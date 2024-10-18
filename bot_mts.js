@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
-import { transformCallHistory } from './functions/transformCallHistory.js'
+import { getCallHistory } from './functions/getCallHistory.js';
 import pkg from 'pg';
 const { Pool } = pkg;
 
