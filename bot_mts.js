@@ -6,6 +6,30 @@ import { getCallHistoryFromDB as getHistoryFromDB } from './functions/db.js';
 import pkg from 'pg';
 const { Pool } = pkg;
 export { pool };
+import express from 'express'; // Убедитесь, что express установлен
+import bodyParser from 'body-parser';
+
+const app = express();
+const PORT = 3000;
+
+// Настройка middleware для парсинга JSON
+app.use(bodyParser.json());
+
+// Обработчик для вебхуков
+app.post('/webhook', async (req, res) => {
+    console.log('Получен вебхук:', req.body); // Логируем полученные данные
+
+    // Здесь вы можете добавить логику для обработки данных
+    // Например, вставка данных в базу данных
+
+    res.status(200).send('Вебхук получен'); // Ответ клиенту
+});
+
+// Запускаем сервер
+app.listen(PORT, () => {
+    console.log(`Сервер запущен на http://localhost:${PORT}`);
+});
+
 // Настройки подключения к PostgreSQL
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
