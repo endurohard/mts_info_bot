@@ -20,17 +20,17 @@ async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
 
     const values = [
-        data.event_type, // eventType
-        BigInt(data.abonent_id), // abonentId (преобразуем в bigint)
-        data.call_id, // callId
-        data.state, // state
-        data.remote_party_name || '', // remotePartyName (или пустая строка, если null)
-        data.remote_party_address, // remotePartyAddress
-        data.call_direction, // callDirection
-        convertToDateTime(data.start_time), // startTime
-        convertToDateTime(data.answer_time), // answerTime
-        convertToDateTime(data.end_time), // endTime
-        data.ext_tracking_id // extTrackingId
+        data.eventType, // eventType
+        BigInt(data.abonentId), // abonentId (преобразуем в bigint)
+        data.payload.callId, // callId
+        data.payload.state, // state
+        data.payload.remotePartyName || '', // remotePartyName (или пустая строка, если null)
+        data.payload.remotePartyAddress, // remotePartyAddress
+        data.payload.callDirection, // callDirection
+        convertToDateTime(data.payload.startTime), // startTime
+        convertToDateTime(data.payload.answerTime), // answerTime
+        convertToDateTime(data.payload.endTime), // endTime
+        data.payload.extTrackingId // extTrackingId
     ];
 
     try {
