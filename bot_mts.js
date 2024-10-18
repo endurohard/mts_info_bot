@@ -15,7 +15,16 @@ const PORT = 7771;
 // Используем body-parser для парсинга JSON
 app.use(bodyParser.json());
 
-// Функция для вставки данных в базу данных
+// Функция для преобразования временной метки в формат ISO
+function convertToDateTime(timestamp) {
+    if (timestamp) {
+        const date = new Date(timestamp);
+        return date.toISOString(); // Возвращаем в формате ISO
+    }
+    return null; // Если timestamp равен null, возвращаем null
+}
+
+// Ваши другие функции, включая insertWebhook...
 async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
 
@@ -40,6 +49,7 @@ async function insertWebhook(data) {
         console.error('Ошибка при вставке вебхука:', err);
     }
 }
+
 // Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
     console.log('Получен вебхук:', req.body); // Логируем полученные данные
