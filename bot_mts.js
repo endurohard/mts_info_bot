@@ -24,6 +24,8 @@ function convertToDateTime(timestamp) {
     return null; // Если timestamp равен null, возвращаем null
 }
 
+const logger = require('./logger');
+
 // Ваши другие функции, включая insertWebhook...
 async function insertWebhook(data) {
     const query = 'INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, call_direction, start_time, answer_time, end_time, ext_tracking_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
