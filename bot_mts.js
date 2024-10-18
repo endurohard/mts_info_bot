@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 // Функция для преобразования временной метки в формат ISO
 function convertToDateTime(timestamp) {
     if (timestamp) {
-        const date = new Date(Number(timestamp)); // Преобразуем метку времени в миллисекундах
+        const date = new Date(Number(timestamp)); // Преобразуем метку времени из миллисекунд
         return date.toISOString(); // Возвращаем в формате ISO
     }
     return null;
@@ -87,8 +87,19 @@ function logWebhook(webhookData) {
 // Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
     const webhookData = req.body;
-    logWebhook(webhookData);
+
+    // Логируем данные вебхука
+    console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2));
+
+    // Проверяем и логируем время звонка и номер
+    if (webhookData.payload) {
+        const call = webhookData.payload;
+        console.log(`Время звонка: ${convertToDateTime(call.answerTime) || 'null'}, Номер: ${call.remotePartyAddress || 'null'}`);
+    }
+
+    // Вставляем данные в базу
     await insertWebhook(webhookData);
+
     res.status(200).send('Webhook received');
 });
 
