@@ -54,10 +54,13 @@ async function insertWebhook(data) {
 
 // Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
-    logger.info('Получен вебхук:', req.body);
+    console.log('Получен вебхук:', req.body); // Логируем полученные данные
+    // Вставляем данные в базу данных
     await insertWebhook(req.body);
-    res.status(200).send('Webhook received');
+    res.status(200).send('Webhook received'); // Ответ для vpbx
 });
+
+console.log(`Время звонка: ${data.payload.answerTime || 'null'}, Номер: ${data.payload.remotePartyAddress || 'null'}`);
 
 // Запускаем сервер
 app.listen(PORT, () => {
