@@ -124,6 +124,30 @@ bot.onText(/История вызовов/, async (msg) => {
         bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
     }
 });
+
+import { getCallHistoryFromDB } from './db.js';
+
+// Пример использования функции
+bot.onText(/Получить историю вызовов/, async (msg) => {
+    const chatId = msg.chat.id;
+    try {
+        const callHistory = await getCallHistoryFromDB();
+        if (callHistory.length === 0) {
+            bot.sendMessage(chatId, 'История вызовов пуста.');
+            return;
+        }
+
+        const formattedCalls = callHistory.map(call => {
+            return `Время звонка: ${call.call_time}, Номер: ${call.calling_number}`; // Замените на ваши поля
+        }).join('\n\n');
+
+        bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
+    } catch (error) {
+        console.error('Ошибка при получении истории вызовов из базы данных:', error.message);
+        bot.sendMessage(chatId, 'Ошибка при получении истории вызовов.');
+    }
+});
+
 // Запускаем бота
 console.log('Бот запущен...');
 
