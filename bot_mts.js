@@ -8,12 +8,13 @@ const { Pool } = pkg;
 
 let process;
 const pool = new Pool({
-    user: process.env.DB_USER, // Имя пользователя
+    user: process.env.DB_USER || 'postgres', // Имя пользователя
     host: 'localhost',
-    database: process.env.DB_NAME, // Имя базы данных
-    password: process.env.DB_PASSWORD, // Пароль
+    database: process.env.DB_NAME || 'webhookdb', // Имя базы данных
+    password: process.env.DB_PASSWORD || '6TQNF_Srld', // Пароль
     port: 5432,
 });
+
 console.log('Connecting to database:', process.env.DATABASE_URL);
 // Инициализация Telegram бота
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
