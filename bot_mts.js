@@ -27,12 +27,16 @@ app.use(bodyParser.json());
 
 // Функция для преобразования временной метки в формат ISO
 function convertToDateTime(timestamp) {
-    return timestamp ? new Date(timestamp).toISOString() : null;
+    if (timestamp) {
+        const date = new Date(Number(timestamp)); // Преобразуем метку времени в миллисекундах
+        return date.toISOString(); // Возвращаем в формате ISO
+    }
+    return null;
 }
 
 // Функция для форматирования данных вызова
 function formatCall(call) {
-    return `Время звонка: ${call.call_time || 'null'}, Номер: ${call.calling_number || 'null'}`;
+    return `Время звонка: ${convertToDateTime(call.answerTime) || 'null'}, Номер: ${call.remotePartyAddress || 'null'}`;
 }
 
 // Централизованная функция обработки вебхуков
