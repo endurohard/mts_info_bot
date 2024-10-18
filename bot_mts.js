@@ -15,11 +15,31 @@ const PORT = 7771;
 // Используем body-parser для парсинга JSON
 app.use(bodyParser.json());
 
+// Функция для вставки данных в базу данных
+async function insertWebhook(data) {
+    const query = 'INSERT INTO webhooks(webhook_url, call_time, calling_number, direction, status) VALUES($1, $2, $3, $4, $5)';
+    const values = [
+        data.webhook_url,
+        data.call_time,
+        data.calling_number,
+        data.direction,
+        data.status
+    ];
+
+    try {
+        await pool.query(query, values);
+        console.log('Вебхук добавлен в базу данных:', data);
+    } catch (err) {
+        console.error('Ошибка при вставке вебхука:', err);
+    }
+}
+
 // Обработка вебхука
 app.post('/api/subscription', async (req, res) => {
     console.log('Получен вебхук:', req.body); // Логируем полученные данные
 
-    // Здесь можно добавить дополнительную обработку данных и вставку в базу данных
+    // Вставляем данные в базу данных
+    await insertWebhook(req.body);
 
     res.status(200).send('Webhook received'); // Ответ для vpbx
 });
