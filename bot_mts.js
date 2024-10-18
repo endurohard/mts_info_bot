@@ -14,7 +14,7 @@ const pool = new Pool({
 });
 
 // Инициализация Telegram бота
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
 // Функция для вставки вебхука в базу данных
 async function insertWebhook(data) {
