@@ -34,27 +34,8 @@ const webhookData = {
     status: "состоявшийся"
 };
 
-// Вставка вебхука в базу данных
-let promise = insertWebhook(webhookData);
-promise.catch(err => console.error('Ошибка:', err));
-
-// Получение токена из .env
-const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-
-// Включение режима опроса (polling)
-const bot = new TelegramBot(telegramToken, { polling: true });
-
-// Обработка команды '/start'
-bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'Привет! Я ваш бот. Нажмите кнопку, чтобы начать.', {
-        reply_markup: {
-            keyboard: [['Запуск'], ['Активация API'], ['Получить список абонентов'], ['История вызовов']],
-            resize_keyboard: true,
-            // one_time_keyboard: true // одноразовая клавиатура
-        }
-    });
-});
+// Вставка вебхука в базу данных (без повторного объявления переменной promise)
+insertWebhook(webhookData).catch(err => console.error('Ошибка:', err));
 
 // Обработка нажатия на кнопку 'Запуск'
 bot.onText(/Запуск/, (msg) => {
