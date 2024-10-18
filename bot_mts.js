@@ -8,10 +8,10 @@ const { Pool } = pkg;
 
 let process;
 const pool = new Pool({
-    user: process.env.DB_USER, // Если у вас есть переменная окружения
+    user: process.env.DB_USER, // Имя пользователя
     host: 'localhost',
-    database: process.env.DB_NAME, // Имя вашей базы данных
-    password: process.env.DB_PASSWORD, // Пароль из .env
+    database: process.env.DB_NAME, // Имя базы данных
+    password: process.env.DB_PASSWORD, // Пароль
     port: 5432,
 });
 console.log('Connecting to database:', process.env.DATABASE_URL);
