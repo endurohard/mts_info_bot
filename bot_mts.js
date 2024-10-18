@@ -2,6 +2,7 @@ import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
 import { getCallHistory } from './functions/api.js'; // Импортируем функцию получения истории вызовов
 import { transformCallHistory } from './functions/transformCallHistory.js'; // Импортируем функцию преобразования
+import { getCallHistoryFromDB } from './functions/db.js';
 import pkg from 'pg';
 const { Pool } = pkg;
 
@@ -99,7 +100,6 @@ bot.onText(/Получить список абонентов/, async (msg) => {
 });
 
 // Обработка нажатия на кнопку 'История вызовов'
-// Обработка нажатия на кнопку 'История вызовов'
 bot.onText(/История вызовов/, async (msg) => {
     const chatId = msg.chat.id;
     try {
@@ -125,7 +125,7 @@ bot.onText(/История вызовов/, async (msg) => {
     }
 });
 
-import { getCallHistoryFromDB } from './db.js';
+import { getCallHistoryFromDB } from './functions/db.js';
 
 // Пример использования функции
 bot.onText(/Получить историю вызовов/, async (msg) => {
