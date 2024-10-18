@@ -34,18 +34,23 @@ function convertToDateTime(timestamp) {
     return null;
 }
 
-// Функция для форматирования данных вызова
-function formatCall(call) {
-    return `Время звонка: ${convertToDateTime(call.answerTime) || 'null'}, Номер: ${call.remotePartyAddress || 'null'}`;
-}
-
-// Централизованная функция обработки вебхуков
+// Функция для записи вебхуков в базу данных
 async function insertWebhook(data) {
     const query = `
-        INSERT INTO webhooks(event_type, abonent_id, call_id, state, remote_party_name, remote_party_address, 
-        call_direction, start_time, answer_time, end_time, ext_tracking_id)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-    `;
+        INSERT INTO webhooks(
+            event_type, 
+            abonent_id, 
+            call_id, 
+            state, 
+            remote_party_name, 
+            remote_party_address, 
+            call_direction, 
+            start_time, 
+            answer_time, 
+            end_time, 
+            ext_tracking_id
+        ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`;
+
     const values = [
         data.eventType,
         BigInt(data.abonentId),
@@ -68,36 +73,16 @@ async function insertWebhook(data) {
     }
 }
 
-// Логирование вебхука
-function logWebhook(webhookData) {
-    console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2));
-    if (webhookData.payload) {
-        if (Array.isArray(webhookData.payload)) {
-            webhookData.payload.forEach(item => {
-                console.log(`Время звонка: ${item.answer_time || 'null'}, Номер: ${item.remote_party_address || 'null'}`);
-            });
-        } else {
-            console.log(`Время звонка: ${webhookData.payload.answer_time || 'null'}, Номер: ${webhookData.payload.remote_party_address || 'null'}`);
-        }
-    } else {
-        console.log('Payload отсутствует');
-    }
-}
-
-// Обработка вебхука
+// Обработка вебхуков
 app.post('/api/subscription', async (req, res) => {
     const webhookData = req.body;
 
-    // Логируем данные вебхука
+    // Логируем данные вебхука для отладки
     console.log('Получен вебхук:', JSON.stringify(webhookData, null, 2));
+    console.log('Время ответа:', convertToDateTime(webhookData.payload.answerTime));
+    console.log('Время завершения:', convertToDateTime(webhookData.payload.endTime));
 
-    // Проверяем и логируем время звонка и номер
-    if (webhookData.payload) {
-        const call = webhookData.payload;
-        console.log(`Время звонка: ${convertToDateTime(call.answerTime) || 'null'}, Номер: ${call.remotePartyAddress || 'null'}`);
-    }
-
-    // Вставляем данные в базу
+    // Вставляем вебхук в базу данных
     await insertWebhook(webhookData);
 
     res.status(200).send('Webhook received');
@@ -126,7 +111,7 @@ function createKeyboard() {
     };
 }
 
-// Функция для обработки нажатия на клавиши
+// Функция для обработки нажатия на кнопки в боте
 function handleButtonPress(bot, msg, action, actionCallback) {
     const chatId = msg.chat.id;
     console.log(`Кнопка "${action}" нажата`);
@@ -139,7 +124,7 @@ bot.onText(/\/start/, (msg) => {
     bot.sendMessage(chatId, 'Добро пожаловать! Выберите действие:', createKeyboard());
 });
 
-// Активация API
+// Обработка кнопки 'Активация API'
 bot.onText(/Активация API/, (msg) => {
     handleButtonPress(bot, msg, 'Активация API', async (chatId) => {
         try {
@@ -152,7 +137,7 @@ bot.onText(/Активация API/, (msg) => {
     });
 });
 
-// Получение списка абонентов
+// Обработка кнопки 'Получить список абонентов'
 bot.onText(/Получить список абонентов/, (msg) => {
     handleButtonPress(bot, msg, 'Получить список абонентов', async (chatId) => {
         try {
@@ -165,18 +150,23 @@ bot.onText(/Получить список абонентов/, (msg) => {
     });
 });
 
-// История вызовов
+// Обработка кнопки 'История вызовов'
 bot.onText(/История вызовов/, (msg) => {
     handleButtonPress(bot, msg, 'История вызовов', async (chatId) => {
         try {
             const response = await getCallHistory();
             const calls = response.content || [];
+
             if (!calls.length) {
                 bot.sendMessage(chatId, 'История вызовов пуста.');
                 return;
             }
+
             const transformedCalls = transformCallHistory(response);
-            const formattedCalls = transformedCalls.map(formatCall).join('\n\n');
+            const formattedCalls = transformedCalls.map(call => {
+                return `Время звонка: ${convertToDateTime(call.answerTime)}, Номер: ${call.remotePartyAddress}`;
+            }).join('\n\n');
+
             bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
         } catch (error) {
             console.error('Ошибка при получении истории вызовов:', error.message);
@@ -185,16 +175,22 @@ bot.onText(/История вызовов/, (msg) => {
     });
 });
 
-// История вызовов из БД
+// Обработка кнопки 'Получить историю вызовов DB'
 bot.onText(/Получить историю вызовов DB/, (msg) => {
     handleButtonPress(bot, msg, 'Получить историю вызовов DB', async (chatId) => {
         try {
             const callHistory = await getHistoryFromDB();
+            console.log('Получена история вызовов из базы данных:', callHistory);
+
             if (!callHistory.length) {
                 bot.sendMessage(chatId, 'История вызовов пуста.');
                 return;
             }
-            const formattedCalls = callHistory.map(formatCall).join('\n\n');
+
+            const formattedCalls = callHistory.map(call => {
+                return `Время звонка: ${convertToDateTime(call.start_time)}, Номер: ${call.remote_party_address}`;
+            }).join('\n\n');
+
             bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
         } catch (error) {
             console.error('Ошибка при получении истории вызовов из базы данных:', error.message);
