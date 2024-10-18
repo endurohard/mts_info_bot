@@ -34,6 +34,21 @@ function convertToDateTime(timestamp) {
     return null;
 }
 
+// Функция для форматирования даты в читаемый формат
+function formatDateTime(isoString) {
+    if (!isoString) return 'null';
+    const date = new Date(isoString);
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    };
+    return date.toLocaleDateString('ru-RU', options);
+}
+
 // Функция для записи вебхуков в базу данных
 async function insertWebhook(data) {
     const query = `
@@ -164,7 +179,7 @@ bot.onText(/История вызовов/, (msg) => {
 
             const transformedCalls = transformCallHistory(response);
             const formattedCalls = transformedCalls.map(call => {
-                return `Время звонка: ${convertToDateTime(call.answerTime)}, Номер: ${call.remotePartyAddress}`;
+                return `Время звонка: ${formatDateTime(call.answerTime)}, Номер: ${call.remotePartyAddress}`;
             }).join('\n\n');
 
             bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
@@ -188,7 +203,7 @@ bot.onText(/Получить историю вызовов DB/, (msg) => {
             }
 
             const formattedCalls = callHistory.map(call => {
-                return `Время звонка: ${convertToDateTime(call.start_time)}, Номер: ${call.remote_party_address}`;
+                return `Время звонка: ${formatDateTime(call.start_time)}, Номер: ${call.remote_party_address}`;
             }).join('\n\n');
 
             bot.sendMessage(chatId, `История вызовов:\n${formattedCalls}`);
